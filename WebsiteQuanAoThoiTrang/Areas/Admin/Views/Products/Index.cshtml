@@ -1,0 +1,23 @@
+﻿@model List<WebsiteQuanAoThoiTrang.Models.Product>
+<h2>Quản lý Sản phẩm</h2>
+<a asp-action="Create" class="btn btn-success">Thêm mới</a>
+<table class="table">
+    <thead>
+        <tr><th>ID</th><th>Tên</th><th>Giá</th><th>Danh mục</th><th>Hành động</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Id</td>
+                <td>@p.Name</td>
+                <td>@p.Price</td>
+                <td>@p.Category.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-warning">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@p.Id" class="btn btn-danger">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

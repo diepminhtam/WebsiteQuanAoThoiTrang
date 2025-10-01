@@ -1,0 +1,56 @@
+﻿@model List<WebsiteQuanAoThoiTrang.Controllers.CartController.CartItem>
+<h2>Giỏ hàng</h2>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-warning">
+        Giỏ hàng của bạn đang rỗng. <a asp-controller="Products" asp-action="Index">Tiếp tục mua sắm</a>
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Giá</th>
+                <th>Tổng</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>ID: @item.ProductId (Tên sản phẩm)</td>  <!-- Có thể load tên từ DB -->
+                    <td>@item.Quantity</td>
+                    <td>@item.Price.ToString("N0") VNĐ</td>
+                    <td>@(item.Quantity* item.Price).ToString("N0") VNĐ</td>
+                    <td>
+                        <!-- Form POST để xóa item -->
+                        <form asp-action="RemoveFromCart" method="post" style="display: inline;">
+                            <input type="hidden" name="productId" value="@item.ProductId" />
+                            <button type="submit" class="btn btn-danger btn-sm">Xóa</button>  <!-- XÓA onclick ở đây -->
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Tổng tiền: @Model.Sum(i => i.Quantity * i.Price).ToString("N0") VNĐ</h4>
+        </div>
+        <div class="col-md-6">
+            <form asp-controller="Orders" asp-action="Create" method="post">
+                <div class="form-group mb-2">
+                    <label>Địa chỉ giao hàng</label>
+                    <textarea name="address" class="form-control" placeholder="Nhập địa chỉ..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Đặt hàng</button>
+                <a asp-controller="Products" asp-action="Index" class="btn btn-secondary">Tiếp tục mua</a>
+            </form>
+        </div>
+    </div>
+}
