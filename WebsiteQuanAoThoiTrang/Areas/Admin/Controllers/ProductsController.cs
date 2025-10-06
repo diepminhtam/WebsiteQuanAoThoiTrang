@@ -17,9 +17,21 @@ namespace WebsiteQuanAoThoiTrang.Areas.Admin.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search, int? categoryId)
         {
-            var products = await _context.Products.Include(p => p.Category).ToListAsync();
+            IQueryable<Product> query = _context.Products.Include(p => p.Category);
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(p => p.Name.Contains(search) || p.Description.Contains(search));
+            }
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            }
+            var products = await query.ToListAsync();
+            ViewBag.Search = search;
+            ViewBag.CategoryId = categoryId;
+            ViewBag.Categories = _context.Categories.ToList();
             return View(products);
         }
 
@@ -30,12 +42,14 @@ namespace WebsiteQuanAoThoiTrang.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Product product)
         {
             if (ModelState.IsValid)
             {
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Thêm sản phẩm thành công!";
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.Categories = _context.Categories.ToList();
@@ -51,6 +65,7 @@ namespace WebsiteQuanAoThoiTrang.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Product product)
         {
             if (id != product.Id) return NotFound();
@@ -58,12 +73,15 @@ namespace WebsiteQuanAoThoiTrang.Areas.Admin.Controllers
             {
                 _context.Update(product);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Cập nhật sản phẩm thành công!";
                 return RedirectToAction(nameof(Index));
             }
             ViewBag.Categories = _context.Categories.ToList();
             return View(product);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
             var product = await _context.Products.FindAsync(id);
@@ -71,6 +89,7 @@ namespace WebsiteQuanAoThoiTrang.Areas.Admin.Controllers
             {
                 _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = "Xóa sản phẩm thành công!";
             }
             return RedirectToAction(nameof(Index));
         }

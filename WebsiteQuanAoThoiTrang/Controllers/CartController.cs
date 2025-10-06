@@ -26,7 +26,6 @@ namespace WebsiteQuanAoThoiTrang.Controllers
             return View(cart);
         }
 
-        // POST: Thêm vào giỏ
         [HttpPost]
         public IActionResult AddToCart(int productId, int quantity = 1)
         {
@@ -58,7 +57,6 @@ namespace WebsiteQuanAoThoiTrang.Controllers
             return Json(new { success = true, message = "Đã thêm vào giỏ!", totalItems = cart.Sum(c => c.Quantity) });
         }
 
-        // THÊM: POST: Xóa item khỏi giỏ
         [HttpPost]
         public IActionResult RemoveFromCart(int productId)
         {
@@ -77,7 +75,6 @@ namespace WebsiteQuanAoThoiTrang.Controllers
             return Json(new { success = false, message = "Item không tồn tại trong giỏ." });
         }
 
-        // Class CartItem (public)
         public class CartItem
         {
             public int ProductId { get; set; }

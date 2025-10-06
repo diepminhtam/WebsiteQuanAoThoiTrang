@@ -3,30 +3,86 @@
     ViewData["Title"] = "Trang chủ";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Chào mừng đến Shop Thời Trang!</h1>
-    <p>Sản phẩm nổi bật:</p>
-</div>
-
-<div class="row">
-    @foreach (var product in Model)
-    {
-        <div class="col-md-4">
-            <div class="card mb-4">
-                <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name">
-                <div class="card-body">
-                    <h5 class="card-title">@product.Name</h5>
-                    <p class="card-text">@product.Description</p>
-                    <p class="card-text"><strong>@product.Price.ToString("N0") VNĐ</strong></p>
-                    <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary">Xem chi tiết</a>
-                    <!-- THAY: Form POST cho Thêm giỏ -->
-                    <form asp-controller="Cart" asp-action="AddToCart" method="post" style="display: inline;">
-                        <input type="hidden" name="productId" value="@product.Id" />
-                        <input type="number" name="quantity" value="1" min="1" max="@product.Stock" class="form-control d-inline w-auto" style="width: 60px;" />
-                        <button type="submit" class="btn btn-success">Thêm giỏ</button>
-                    </form>
+<div class="container-fluid">
+    <!-- Slider Banner -->
+    <div id="productCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#productCarousel" data-bs-slide-to="2"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="~/images/banner1.jpg" class="d-block w-100" alt="Banner 1" style="height: 400px; object-fit: cover;">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Thời Trang Mới Nhất</h5>
+                    <p>Khám phá bộ sưu tập hè 2025!</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="~/images/banner2.jpg" class="d-block w-100" alt="Banner 2" style="height: 400px; object-fit: cover;">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Giảm Giá 50%</h5>
+                    <p>Ưu đãi đặc biệt cho khách hàng thân thiết.</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="~/images/banner3.jpg" class="d-block w-100" alt="Banner 3" style="height: 400px; object-fit: cover;">
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Sản Phẩm Bán Chạy</h5>
+                    <p>Top 10 item hot nhất tháng.</p>
                 </div>
             </div>
         </div>
-    }
+        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+    <h2 class="mb-4 text-center">Sản Phẩm Nổi Bật</h2>
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@product.Name</h5>
+                        @{
+                            var desc = product.Description ?? "";
+                            var shortDesc = desc.Length > 50 ? desc.Substring(0, 50) + "..." : desc;
+                        }
+                        <p class="card-text">@shortDesc</p>
+                        <p class="card-text text-success fw-bold fs-5">@product.Price.ToString("N0") VNĐ</p>
+                        <p class="card-text"><small class="text-muted">Kho: @product.Stock</small></p>
+                        <div class="d-grid gap-2">
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary">
+                                <i class="fas fa-eye me-1"></i>Xem Chi Tiết
+                            </a>
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post" style="display: inline;">
+                                <input type="hidden" name="productId" value="@product.Id" />
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-shopping-cart me-1"></i>Thêm Giỏ Hàng
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="text-center mt-4">
+        <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary btn-lg">
+            <i class="fas fa-arrow-right me-2"></i>Xem Tất Cả Sản Phẩm
+        </a>
+    </div>
 </div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />

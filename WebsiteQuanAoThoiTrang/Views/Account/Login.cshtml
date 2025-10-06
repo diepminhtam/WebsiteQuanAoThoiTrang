@@ -1,14 +1,55 @@
-﻿<h2>Đăng nhập Khách hàng</h2>
-<form asp-action="Login">
-    <div class="form-group">
-        <label>Email</label>
-        <input name="email" class="form-control" />
+﻿@{
+    ViewData["Title"] = "Đăng Nhập";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-lg border-0 rounded-3 mt-5">
+                <div class="card-header bg-primary text-white text-center rounded-top-3">
+                    <i class="fas fa-user fa-2x mb-2"></i>
+                    <h3 class="mb-0">Đăng Nhập Khách Hàng</h3>
+                    <p class="small mb-0">Chào mừng quay lại!</p>
+                </div>
+                <div class="card-body p-4">
+                    <form asp-action="Login">
+                        <div asp-validation-summary="All" class="alert alert-danger small rounded mb-3" style="display: none;"></div>
+                        <div class="mb-3">
+                            <label class="form-label"><i class="fas fa-envelope me-2 text-primary"></i>Email</label>
+                            <input name="email" class="form-control" placeholder="Nhập email..." required />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label"><i class="fas fa-lock me-2 text-primary"></i>Mật khẩu</label>
+                            <input name="password" type="password" class="form-control" placeholder="Nhập mật khẩu..." required />
+                        </div>
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="remember" />
+                            <label class="form-check-label" for="remember">Ghi nhớ đăng nhập</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
+                            <i class="fas fa-sign-in-alt me-2"></i>Đăng Nhập
+                        </button>
+                    </form>
+                    <div class="divider d-flex align-items-center my-3">
+                        <p class="text-center fw-bold mx-3 mb-0 text-muted">hoặc</p>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-outline-danger btn-lg w-100 mb-2">
+                            <i class="fab fa-google me-2"></i>Đăng Nhập Google
+                        </button>
+                        <button class="btn btn-outline-primary btn-lg w-100">
+                            <i class="fab fa-facebook me-2"></i>Đăng Nhập Facebook
+                        </button>
+                    </div>
+                    <div class="text-center mt-4">
+                        <p class="small mb-0">Chưa có tài khoản? <a asp-action="Register" class="text-primary fw-bold">Đăng ký ngay</a></p>  <!-- FIX: Link đúng đến Register (khách hàng Customer) -->
+                        <p class="small"><a asp-action="AdminLogin" class="text-primary">Đăng nhập Admin</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label>Mật khẩu</label>
-        <input name="password" type="password" class="form-control" />
-    </div>
-    <button type="submit" class="btn btn-primary">Đăng nhập</button>
-</form>
-<p>Chưa có tài khoản? <a asp-action="Register">Đăng ký</a></p>
-<p><a asp-action="AdminLogin">Đăng nhập Admin</a></p>
+</div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />

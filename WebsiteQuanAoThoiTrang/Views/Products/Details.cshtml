@@ -1,13 +1,55 @@
 ﻿@model WebsiteQuanAoThoiTrang.Models.Product
-<h2>@Model.Name</h2>
-<img src="@Model.ImageUrl" style="max-width:300px;" />
-<p>@Model.Description</p>
-<p>Giá: @Model.Price.ToString("N0") VNĐ</p>
-<p>Kho: @Model.Stock</p>
-<!-- THAY: Form POST -->
-<form asp-controller="Cart" asp-action="AddToCart" method="post">
-    <input type="hidden" name="productId" value="@Model.Id" />
-    <input type="number" name="quantity" value="1" min="1" max="@Model.Stock" class="form-control d-inline w-auto" style="width: 60px;" />
-    <button type="submit" class="btn btn-success">Thêm vào giỏ</button>
-</form>
-<a asp-controller="Products" asp-action="Index" class="btn btn-secondary">Quay lại</a>
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded shadow" style="height: 400px; object-fit: cover;">
+        </div>
+        <div class="col-md-6">
+            <h1 class="mb-3">@Model.Name</h1>
+            <p class="lead text-success fw-bold fs-2 mb-3">@Model.Price.ToString("N0") VNĐ</p>
+            <p class="text-muted mb-3">Danh mục: @Model.Category?.Name | Kho còn: @Model.Stock</p>
+            <p class="mb-4">@Model.Description</p>
+            <div class="mb-3">
+                <label class="form-label">Số lượng:</label>
+                <input type="number" id="quantity" min="1" max="@Model.Stock" value="1" class="form-control d-inline w-auto me-2" style="width: 80px;" />
+            </div>
+            <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <button type="submit" class="btn btn-success btn-lg me-2">
+                    <i class="fas fa-shopping-cart me-2"></i>Thêm Vào Giỏ Hàng
+                </button>
+            </form>
+            <a asp-controller="Products" asp-action="Index" class="btn btn-secondary btn-lg">
+                <i class="fas fa-arrow-left me-2"></i>Quay Lại Danh Sách
+            </a>
+        </div>
+    </div>
+
+    <!-- Sản phẩm liên quan -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="mb-4">Sản Phẩm Liên Quan</h3>
+        </div>
+        @for (int i = 1; i <= 3; i++)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="~/images/product@i.jpg" class="card-img-top" alt="Sản phẩm @i" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">Sản phẩm liên quan @i</h5>
+                        <p class="card-text">Mô tả ngắn @i...</p>
+                        <p class="text-success fw-bold">@(500000 + i * 100000).ToString("N0") VNĐ</p>
+                        <a asp-action="Details" asp-route-id="@i" class="btn btn-primary btn-sm">Xem Chi Tiết</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />

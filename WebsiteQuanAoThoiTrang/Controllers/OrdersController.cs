@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebsiteQuanAoThoiTrang.Data;  // Cho ApplicationDbContext
-using WebsiteQuanAoThoiTrang.Models;  // Cho Order, etc.
+using WebsiteQuanAoThoiTrang.Data;
+using WebsiteQuanAoThoiTrang.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using System.Text.Json;
@@ -23,7 +23,6 @@ namespace WebsiteQuanAoThoiTrang.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        // THÊM: GET Create - Hiển thị form thanh toán nếu giỏ không rỗng
         [HttpGet]
         public IActionResult Create()
         {
@@ -33,20 +32,18 @@ namespace WebsiteQuanAoThoiTrang.Controllers
 
             if (cart == null || !cart.Any())
             {
-                TempData["Error"] = "Giỏ hàng rỗng. Vui lòng thêm sản phẩm trước khi đặt hàng.";
+                TempData["Error"] = "Giỏ hàng rỗng.";
                 return RedirectToAction("Index", "Cart");
             }
 
-            return View();  // Trả về view form thanh toán
+            return View();
         }
 
-        // POST Create - Xử lý đặt hàng
         [HttpPost]
-        [ValidateAntiForgeryToken]  // Bảo mật form
-        public async Task<IActionResult> Create(string address)  // Nhận địa chỉ từ form
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(string address)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var user = await _userManager.FindByIdAsync(userId);
             var session = _httpContextAccessor.HttpContext.Session;
             var cartJson = session.GetString("Cart");
             var cart = JsonSerializer.Deserialize<List<CartController.CartItem>>(cartJson ?? "[]");
@@ -57,7 +54,6 @@ namespace WebsiteQuanAoThoiTrang.Controllers
                 return RedirectToAction("Index", "Cart");
             }
 
-            // Tạo order
             var order = new Order
             {
                 UserId = userId,
@@ -68,7 +64,6 @@ namespace WebsiteQuanAoThoiTrang.Controllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            // Thêm chi tiết đơn hàng và cập nhật stock
             foreach (var item in cart)
             {
                 var product = await _context.Products.FindAsync(item.ProductId);
@@ -86,7 +81,7 @@ namespace WebsiteQuanAoThoiTrang.Controllers
             }
 
             await _context.SaveChangesAsync();
-            session.Remove("Cart");  // Xóa giỏ sau khi đặt hàng
+            session.Remove("Cart");
             TempData["Success"] = "Đặt hàng thành công!";
             return RedirectToAction("History");
         }
@@ -98,12 +93,28 @@ namespace WebsiteQuanAoThoiTrang.Controllers
                 .Include(o => o.OrderDetails)
                 .ThenInclude(od => od.Product)
                 .Where(o => o.UserId == userId)
+                .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
             return View(orders);
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var order = await _context.Orders
+                .Include(o => o.OrderDetails)
+                .ThenInclude(od => od.Product)
+                .FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId);
 
-        // POST: Hủy đơn hàng (chỉ Pending)
+            if (order == null)
+            {
+                TempData["Error"] = "Đơn hàng không tồn tại.";
+                return RedirectToAction("History");
+            }
+
+            return View(order);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Cancel(int orderId)
@@ -126,7 +137,6 @@ namespace WebsiteQuanAoThoiTrang.Controllers
                 return RedirectToAction("History");
             }
 
-            // Hủy: Đổi status, trả stock
             order.Status = "Cancelled";
             foreach (var detail in order.OrderDetails)
             {

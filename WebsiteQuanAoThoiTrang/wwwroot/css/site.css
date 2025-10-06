@@ -1,47 +1,133 @@
+﻿/* Global */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: all 0.3s ease;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+    color: var(--bs-secondary-color);
+    text-align: end;
 }
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    text-align: start;
 }
 
+/* Body Padding */
 body {
     padding-top: 50px;
     padding-bottom: 20px;
-    background-color: #f8f9fa;
+    background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
 }
 
+/* Card */
 .card {
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     border: 0;
+    border-radius: 0.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+/* Navbar */
 .navbar-brand {
     font-weight: bold;
     color: #007bff !important;
+    font-size: 1.25rem;
+    transition: color 0.3s;
 }
+
+    .navbar-brand:hover {
+        color: #0056b3 !important;
+    }
+
+/* Animation */
+.btn, a.nav-link {
+    transition: all 0.3s ease;
+}
+
+    .btn:hover, a.nav-link:hover {
+        transform: translateY(-1px);
+    }
+
+.badge {
+    font-size: 0.75em;
+    padding: 0.5em 0.75em;
+}
+
+.table-responsive {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.table th {
+    background-color: #0d6efd;
+    color: white;
+    border-top: none;
+}
+
+/* Alert */
+.alert.position-fixed {
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .btn-lg {
+        font-size: 1rem;
+    }
+}
+
+/* Dark Mode (tùy chọn) */
+body.dark-mode {
+    background-color: #343a40;
+    color: #f8f9fa;
+}
+
+    body.dark-mode .card {
+        background-color: #495057;
+        color: #f8f9fa;
+    }

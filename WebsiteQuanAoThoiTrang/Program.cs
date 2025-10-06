@@ -1,18 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using WebsiteQuanAoThoiTrang.Data;  // Namespace cho ApplicationDbContext (nếu ở Data)
-using WebsiteQuanAoThoiTrang.Models;  // Cho ApplicationUser
+using WebsiteQuanAoThoiTrang.Data;
+using WebsiteQuanAoThoiTrang.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services
 builder.Services.AddControllersWithViews();
 
-// Cấu hình DbContext
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Cấu hình Identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
@@ -20,21 +18,18 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
-// THÊM CẤU HÌNH SESSION (FIX LỖI)
-builder.Services.AddDistributedMemoryCache();  // In-memory cache cho Session (dev mode)
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);  // Thời gian hết hạn Session
-    options.Cookie.HttpOnly = true;  // Bảo mật cookie
-    options.Cookie.IsEssential = true;  // Cho phép cookie cần thiết
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
 });
-
-// THÊM IHttpContextAccessor cho CartController
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -46,12 +41,11 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// THÊM USE SESSION VÀO PIPELINE (SAU UseRouting, TRƯỚC UseAuthentication)
-app.UseSession();  // Enable Session middleware
-
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Routes (Areas trước default)
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");

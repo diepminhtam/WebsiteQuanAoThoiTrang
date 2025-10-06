@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebsiteQuanAoThoiTrang.Data;  // Cho ApplicationDbContext
-using WebsiteQuanAoThoiTrang.Models;  // Thêm dòng này để dùng Product, Category
+using WebsiteQuanAoThoiTrang.Data;
+using WebsiteQuanAoThoiTrang.Models;
 
 namespace WebsiteQuanAoThoiTrang.Controllers
 {
@@ -16,18 +16,12 @@ namespace WebsiteQuanAoThoiTrang.Controllers
 
         public async Task<IActionResult> Index(int? categoryId)
         {
-            // Include trước tất cả filter - giữ type IIncludableQueryable
-            var query = _context.Products.Include(p => p.Category);
-
-            // Tạo biến mới cho filter Where() để tránh conflict type
-            IQueryable<Product> filteredQuery = query;  // Bây giờ Product được nhận diện nhờ using Models
+            IQueryable<Product> query = _context.Products.Include(p => p.Category);
             if (categoryId.HasValue)
             {
-                filteredQuery = query.Where(p => p.CategoryId == categoryId.Value);  // Where sau Include, gán vào biến mới
+                query = query.Where(p => p.CategoryId == categoryId.Value);
             }
-
-            // ToListAsync trên filteredQuery
-            var products = await filteredQuery.ToListAsync();
+            var products = await query.ToListAsync();
             return View(products);
         }
 

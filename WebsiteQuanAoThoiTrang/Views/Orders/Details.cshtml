@@ -1,0 +1,79 @@
+﻿@model WebsiteQuanAoThoiTrang.Models.Order
+@{
+    ViewData["Title"] = $"Chi Tiết Đơn Hàng #{Model.Id}";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-3">Chi Tiết Đơn Hàng #@Model.Id</h2>
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Thông Tin Đơn Hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Ngày đặt:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+                            <p>
+                                <strong>Trạng thái:</strong>
+                                <span class="badge @(Model.Status == "Pending" ? "bg-warning" : Model.Status == "Shipped" ? "bg-info" : Model.Status == "Delivered" ? "bg-success" : "bg-danger")">
+                                    @Model.Status
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <p><strong>Tổng tiền:</strong> <span class="text-success fs-4">@Model.TotalAmount.ToString("N0") VNĐ</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow">
+                <div class="card-header">
+                    <h5 class="mb-0">Chi Tiết Sản Phẩm</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Sản Phẩm</th>
+                                    <th>Số Lượng</th>
+                                    <th>Giá</th>
+                                    <th>Tổng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var detail in Model.OrderDetails)
+                                {
+                                    <tr>
+                                        <td>@detail.Product.Name</td>
+                                        <td>@detail.Quantity</td>
+                                        <td>@detail.Price.ToString("N0") VNĐ</td>
+                                        <td class="fw-bold">@(detail.Quantity* detail.Price).ToString("N0") VNĐ</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot class="table-light">
+                                <tr>
+                                    <th colspan="3" class="text-end">Tổng Cộng:</th>
+                                    <th class="text-success fs-5">@Model.TotalAmount.ToString("N0") VNĐ</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a asp-action="History" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-arrow-left me-2"></i>Quay Lại Lịch Sử
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />

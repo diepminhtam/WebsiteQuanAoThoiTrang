@@ -1,17 +1,69 @@
 ﻿@model List<WebsiteQuanAoThoiTrang.Models.Product>
-<h2>Danh sách sản phẩm</h2>
-<div class="row">
-    @foreach (var product in Model)
-    {
-        <div class="col-md-4">
-            <div class="card">
-                <img src="@product.ImageUrl" class="card-img-top">
-                <div class="card-body">
-                    <h5>@product.Name</h5>
-                    <p>@product.Price.ToString("N0") VNĐ</p>
-                    <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary">Chi tiết</a>
+@{
+    ViewData["Title"] = "Sản Phẩm";
+}
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2 class="mb-0">Danh Sách Sản Phẩm</h2>
+        </div>
+        <div class="col-md-6 text-end">
+            <form asp-action="Index" method="get" class="d-inline">
+                <input type="text" name="search" class="form-control d-inline w-auto me-2" placeholder="Tìm kiếm..." value="@ViewBag.Search" />
+                <select name="categoryId" class="form-select d-inline w-auto me-2">
+                    <option value="">Tất cả danh mục</option>
+                    @foreach (var cat in ViewBag.Categories ?? new List<WebsiteQuanAoThoiTrang.Models.Category>())
+                    {
+                        <option value="@cat.Id" selected="@(ViewBag.CategoryId == cat.Id)">@cat.Name</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-outline-primary">Tìm</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 200px; object-fit: cover;">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">@product.Name</h5>
+                        @{
+                            var desc = product.Description ?? "";
+                            var shortDesc = desc.Length > 50 ? desc.Substring(0, 50) + "..." : desc;
+                        }
+                        <p class="card-text flex-grow-1">@shortDesc</p>
+                        <p class="card-text text-success fw-bold fs-5">@product.Price.ToString("N0") VNĐ</p>
+                        <p class="card-text"><small class="text-muted">Danh mục: @product.Category?.Name | Kho: @product.Stock</small></p>
+                        <div class="mt-auto">
+                            <a asp-action="Details" asp-route-id="@product.Id" class="btn btn-primary btn-sm me-2">
+                                <i class="fas fa-eye me-1"></i>Chi Tiết
+                            </a>
+                            <form asp-controller="Cart" asp-action="AddToCart" method="post" style="display: inline;">
+                                <input type="hidden" name="productId" value="@product.Id" />
+                                <button type="submit" class="btn btn-success btn-sm">
+                                    <i class="fas fa-shopping-cart me-1"></i>Thêm Giỏ
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Pagination" class="d-flex justify-content-center">
+        <ul class="pagination">
+            <li class="page-item"><a class="page-link" href="#">Trước</a></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">Sau</a></li>
+        </ul>
+    </nav>
 </div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />

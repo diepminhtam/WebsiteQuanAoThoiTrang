@@ -1,27 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebsiteQuanAoThoiTrang.Data;  // Cho Include và ToListAsync
+using WebsiteQuanAoThoiTrang.Data;
+using WebsiteQuanAoThoiTrang.Models;
 
 namespace WebsiteQuanAoThoiTrang.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ApplicationDbContext _context;  // Field chỉ định nghĩa 1 lần
+        private readonly ApplicationDbContext _context;
 
         public HomeController(ApplicationDbContext context)
         {
-            _context = context;  // Constructor chỉ 1 lần
+            _context = context;
         }
 
         public async Task<IActionResult> Index()
         {
-            // Fix: Gán Include() vào biến var để infer IIncludableQueryable
-            var query = _context.Products.Include(p => p.Category);  // Include trước để giữ type chainable
-            var products = await query.Take(6).ToListAsync();  // Take sau Include, ToListAsync cuối
+            // FIX: Sử dụng var để infer type IIncludableQueryable từ Include
+            var query = _context.Products.Include(p => p.Category);
+            var products = await query.Take(6).ToListAsync();
             return View(products);
         }
 
-        public IActionResult Privacy()  // Method chỉ 1 lần
+        public IActionResult Privacy()
         {
             return View();
         }

@@ -1,23 +1,130 @@
 ﻿@model List<WebsiteQuanAoThoiTrang.Models.Product>
-<h2>Quản lý Sản phẩm</h2>
-<a asp-action="Create" class="btn btn-success">Thêm mới</a>
-<table class="table">
-    <thead>
-        <tr><th>ID</th><th>Tên</th><th>Giá</th><th>Danh mục</th><th>Hành động</th></tr>
-    </thead>
-    <tbody>
-        @foreach (var p in Model)
-        {
-            <tr>
-                <td>@p.Id</td>
-                <td>@p.Name</td>
-                <td>@p.Price</td>
-                <td>@p.Category.Name</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-warning">Sửa</a>
-                    <a asp-action="Delete" asp-route-id="@p.Id" class="btn btn-danger">Xóa</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+@{
+    ViewData["Title"] = "Quản Lý Sản Phẩm";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Quản Lý Sản Phẩm</h1>
+        <a asp-action="Create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="fas fa-plus fa-sm text-white-50"></i> Thêm Sản Phẩm Mới
+        </a>
+    </div>
+
+    <!-- Search Box -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Tìm kiếm sản phẩm</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Index" method="get">
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" name="search" class="form-control" placeholder="Tìm theo tên sản phẩm..." value="@ViewBag.Search" />
+                    </div>
+                    <div class="col-md-3">
+                        <select name="categoryId" class="form-select">
+                            <option value="">Tất cả danh mục</option>
+                            @foreach (var cat in ViewBag.Categories ?? new List<WebsiteQuanAoThoiTrang.Models.Category>())
+                            {
+                                <option value="@cat.Id" selected="@(ViewBag.CategoryId == cat.Id)">@cat.Name</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary btn-block">Tìm kiếm</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Table Sản Phẩm -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Danh Sách Sản Phẩm (@Model.Count sản phẩm)</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên Sản Phẩm</th>
+                            <th>Mô Tả Ngắn</th>
+                            <th>Giá (VNĐ)</th>
+                            <th>Danh Mục</th>
+                            <th>Kho Hàng</th>
+                            <th>Hình Ảnh</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var product in Model)
+                        {
+                            <tr>
+                                <td>@product.Id</td>
+                                <td><strong>@product.Name</strong></td>
+                                <td>
+                                    @{
+                                        var desc = product.Description ?? "";
+                                        var shortDesc = desc.Length > 50 ? desc.Substring(0, 50) + "..." : desc;
+                                    }
+                                    @shortDesc
+                                </td>
+                                <td class="text-success font-weight-bold">@product.Price.ToString("N0")</td>
+                                <td>@product.Category?.Name</td>
+                                <td>
+                                    <span class="badge @(product.Stock > 0 ? "bg-success" : "bg-danger")">@product.Stock</span>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                    {
+                                        <img src="@product.ImageUrl" alt="@product.Name" style="width: 50px; height: 50px; object-fit: cover;" class="img-thumbnail" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Chưa có ảnh</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-warning me-1" title="Sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form asp-action="Delete" method="post" style="display: inline;" onsubmit="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">
+                                        <input type="hidden" name="id" value="@product.Id" />
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Pagination">
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a class="page-link" href="#">Trước</a></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">Sau</a></li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
