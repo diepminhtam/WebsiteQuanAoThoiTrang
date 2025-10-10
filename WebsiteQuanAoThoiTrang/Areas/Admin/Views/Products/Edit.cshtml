@@ -6,58 +6,74 @@
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header">
-                    <h4 class="mb-0">Chỉnh Sửa Sản Phẩm: @Model.Name</h4>
+        <div class="col-lg-8">
+            <div class="card shadow-sm mt-4">
+                <div class="card-header bg-white d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0">Chỉnh Sửa Sản Phẩm</h5>
+                    <small class="text-muted">ID: @Model.Id</small>
                 </div>
                 <div class="card-body">
-                    <form asp-action="Edit">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data" accept-charset="utf-8">
+                        @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="Id" />
                         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Name" class="form-label"></label>
-                                <input asp-for="Name" class="form-control" />
+
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label asp-for="Name" class="form-label">Tên sản phẩm</label>
+                                <input asp-for="Name" class="form-control" placeholder="Nhập tên sản phẩm" />
                                 <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Price" class="form-label"></label>
-                                <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                            <div class="col-md-4">
+                                <label asp-for="Price" class="form-label">Giá (VNĐ)</label>
+                                <input asp-for="Price" class="form-control" type="number" step="0.01" placeholder="0" />
                                 <span asp-validation-for="Price" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="Stock" class="form-label"></label>
-                                <input asp-for="Stock" class="form-control" type="number" min="0" />
+
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-6">
+                                <label asp-for="Stock" class="form-label">Số lượng (Kho)</label>
+                                <input asp-for="Stock" class="form-control" type="number" min="0" placeholder="0" />
                                 <span asp-validation-for="Stock" class="text-danger"></span>
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label asp-for="CategoryId" class="form-label"></label>
-                                <select asp-for="CategoryId" class="form-select">
-                                    <option value="">Chọn danh mục</option>
-                                    @foreach (var cat in ViewBag.Categories)
-                                    {
-                                        <option value="@cat.Id" selected="@(Model.CategoryId == cat.Id)">@cat.Name</option>
-                                    }
+                            <div class="col-md-6">
+                                <label asp-for="CategoryId" class="form-label">Danh mục</label>
+                                <select asp-for="CategoryId" class="form-select" asp-items="@(new SelectList(ViewBag.Categories, "Id", "Name"))">
+                                    <option value="">-- Chọn danh mục --</option>
                                 </select>
                                 <span asp-validation-for="CategoryId" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label asp-for="Description" class="form-label"></label>
+
+                        <div class="mb-3 mt-3">
+                            <label asp-for="Description" class="form-label">Mô tả</label>
                             <textarea asp-for="Description" class="form-control" rows="4"></textarea>
                             <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
-                        <div class="mb-3">
-                            <label asp-for="ImageUrl" class="form-label"></label>
-                            <input asp-for="ImageUrl" class="form-control" />
-                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
-                            <small class="text-muted">URL hình ảnh (ví dụ: /images/sanpham.jpg)</small>
+
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-8">
+                                <label class="form-label">Ảnh sản phẩm</label>
+                                <input type="file" name="ImageFile" class="form-control" accept="image/*" />
+                                <small class="text-muted">Chọn file để thay thế ảnh cũ. Ảnh hiện tại: @Model.ImageUrl</small>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <div class="border rounded p-1 d-inline-block">
+                                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                    {
+                                        <img src="@Model.ImageUrl" alt="Ảnh sản phẩm hiện tại" style="width:100px;height:100px;object-fit:cover;" class="img-thumbnail" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Chưa có ảnh</span>
+                                    }
+                                </div>
+                            </div>
                         </div>
-                        <div class="text-end">
-                            <a asp-action="Index" class="btn btn-secondary me-2">Hủy</a>
+
+                        <div class="d-flex justify-content-end mt-4">
+                            <button type="button" class="btn btn-outline-secondary me-2" onclick="history.back();">Hủy</button>
                             <button type="submit" class="btn btn-primary">Cập Nhật Sản Phẩm</button>
                         </div>
                     </form>
@@ -67,5 +83,6 @@
     </div>
 </div>
 
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

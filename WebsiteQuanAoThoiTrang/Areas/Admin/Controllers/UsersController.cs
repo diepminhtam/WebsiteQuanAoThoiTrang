@@ -43,7 +43,7 @@ namespace WebsiteQuanAoThoiTrang.Areas.Admin.Controllers
         public IActionResult Create()
         {
             ViewBag.Roles = new[] { "Admin", "Customer" };
-            return View();
+            return View(new ApplicationUser());
         }
 
         // POST: Create (thêm user)
@@ -51,6 +51,20 @@ namespace WebsiteQuanAoThoiTrang.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ApplicationUser model, string password)
         {
+            // FIX: Kiểm tra required trước ModelState
+            if (string.IsNullOrWhiteSpace(model.FullName))
+            {
+                ModelState.AddModelError("FullName", "Họ tên là bắt buộc.");
+            }
+            if (string.IsNullOrWhiteSpace(model.Email))
+            {
+                ModelState.AddModelError("Email", "Email là bắt buộc.");
+            }
+            if (string.IsNullOrWhiteSpace(model.Role))
+            {
+                ModelState.AddModelError("Role", "Vai trò là bắt buộc.");
+            }
+
             if (ModelState.IsValid)
             {
                 if (await _userManager.FindByEmailAsync(model.Email) != null)
@@ -98,6 +112,21 @@ namespace WebsiteQuanAoThoiTrang.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(string id, ApplicationUser model)
         {
             if (id != model.Id) return NotFound();
+
+            // FIX: Kiểm tra required trước ModelState
+            if (string.IsNullOrWhiteSpace(model.FullName))
+            {
+                ModelState.AddModelError("FullName", "Họ tên là bắt buộc.");
+            }
+            if (string.IsNullOrWhiteSpace(model.Email))
+            {
+                ModelState.AddModelError("Email", "Email là bắt buộc.");
+            }
+            if (string.IsNullOrWhiteSpace(model.Role))
+            {
+                ModelState.AddModelError("Role", "Vai trò là bắt buộc.");
+            }
+
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByIdAsync(id);
@@ -124,7 +153,7 @@ namespace WebsiteQuanAoThoiTrang.Areas.Admin.Controllers
             return View(model);
         }
 
-        // FIX: POST Delete (kiểm tra tồn tại, không xóa chính mình, log TempData)
+        // POST: Delete (xóa user)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
@@ -136,7 +165,6 @@ namespace WebsiteQuanAoThoiTrang.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Không xóa chính mình
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (id == currentUserId)
             {

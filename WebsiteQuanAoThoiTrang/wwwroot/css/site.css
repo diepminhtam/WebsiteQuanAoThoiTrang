@@ -1,4 +1,4 @@
-﻿/* Global */
+﻿/* Global Styles */
 html {
     font-size: 14px;
 }
@@ -22,9 +22,35 @@ body {
     margin-bottom: 60px;
     background-color: #f8f9fa;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease; /* Animation mượt */
 }
 
+/* Card Styles */
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 0;
+    border-radius: 0.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+/* Navbar Styles */
+.navbar-brand {
+    font-weight: bold;
+    color: #007bff !important;
+    font-size: 1.25rem;
+    transition: color 0.3s;
+}
+
+    .navbar-brand:hover {
+        color: #0056b3 !important;
+    }
+
+/* Form Floating Placeholder */
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
     color: var(--bs-secondary-color);
     text-align: end;
@@ -41,32 +67,7 @@ body {
     background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
 }
 
-/* Card */
-.card {
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-    border: 0;
-    border-radius: 0.5rem;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-    .card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-    }
-
-/* Navbar */
-.navbar-brand {
-    font-weight: bold;
-    color: #007bff !important;
-    font-size: 1.25rem;
-    transition: color 0.3s;
-}
-
-    .navbar-brand:hover {
-        color: #0056b3 !important;
-    }
-
-/* Animation */
+/* Animation cho buttons và links */
 .btn, a.nav-link {
     transition: all 0.3s ease;
 }
@@ -75,11 +76,13 @@ body {
         transform: translateY(-1px);
     }
 
+/* Badge Styles */
 .badge {
     font-size: 0.75em;
     padding: 0.5em 0.75em;
 }
 
+/* Table Responsive */
 .table-responsive {
     border-radius: 0.5rem;
     overflow: hidden;
@@ -92,7 +95,7 @@ body {
     border-top: none;
 }
 
-/* Alert */
+/* Alert Position Fixed */
 .alert.position-fixed {
     animation: slideInRight 0.3s ease-out;
 }
@@ -109,7 +112,7 @@ body {
     }
 }
 
-/* Mobile */
+/* Mobile Responsive */
 @media (max-width: 768px) {
     .container {
         padding-left: 1rem;
@@ -121,7 +124,7 @@ body {
     }
 }
 
-/* Dark Mode (tùy chọn) */
+/* Dark Mode Toggle (tùy chọn, thêm nút toggle nếu cần) */
 body.dark-mode {
     background-color: #343a40;
     color: #f8f9fa;

@@ -7,9 +7,10 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Quản Lý Sản Phẩm</h1>
-        <a asp-action="Create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+        <!-- FIX: Nút Thêm là button với onclick redirect -->
+        <button type="button" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" onclick="location.href='/Admin/Products/Create';">
             <i class="fas fa-plus fa-sm text-white-50"></i> Thêm Sản Phẩm Mới
-        </a>
+        </button>
     </div>
 
     <!-- Search Box -->
@@ -89,10 +90,13 @@
                                     }
                                 </td>
                                 <td>
-                                    <a asp-action="Edit" asp-route-id="@product.Id" class="btn btn-sm btn-warning me-1" title="Sửa">
+                                    <!-- FIX: Nút Sửa là button với onclick redirect -->
+                                    <button type="button" class="btn btn-sm btn-warning me-1" title="Sửa" onclick="location.href='/Admin/Products/Edit/@product.Id';">
                                         <i class="fas fa-edit"></i>
-                                    </a>
+                                    </button>
+                                    <!-- FIX: Form Xóa với @Html.AntiForgeryToken() -->
                                     <form asp-action="Delete" method="post" style="display: inline;" onsubmit="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">
+                                        @Html.AntiForgeryToken()  <!-- FIX: Token để POST Delete hoạt động -->
                                         <input type="hidden" name="id" value="@product.Id" />
                                         <button type="submit" class="btn btn-sm btn-danger" title="Xóa">
                                             <i class="fas fa-trash"></i>

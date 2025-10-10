@@ -9,22 +9,16 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <style>
         :root {
-            --sidebar-bg: linear-gradient(180deg, #343a40 0%, #212529 100%);
+            --sidebar-bg: #212529;
             --sidebar-hover: #495057;
             --sidebar-active: #0d6efd;
             --navbar-bg: linear-gradient(90deg, #0d6efd 0%, #6610f2 100%);
-            --card-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f8f9fa;
         }
 
         .sb-sidenav-dark {
             background: var(--sidebar-bg);
             color: #fff;
-            box-shadow: var(--card-shadow);
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             z-index: 1038;
             top: 56px;
             position: fixed;
@@ -55,8 +49,8 @@
             .sb-sidenav-menu .nav-link:hover {
                 background: var(--sidebar-hover);
                 color: #fff;
-                transform: scale(1.02);
-                box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2);
+                transform: translateX(5px);
+                box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.2);
             }
 
             .sb-sidenav-menu .nav-link.active {
@@ -65,9 +59,13 @@
                 box-shadow: 0 0.125rem 0.25rem rgba(13, 110, 253, 0.25);
             }
 
+            .sb-sidenav-menu .nav-link .badge {
+                margin-left: auto;
+            }
+
         .sb-topnav {
             background: var(--navbar-bg);
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
             z-index: 1040;
             position: sticky;
             top: 0;
@@ -77,14 +75,13 @@
         .navbar-brand {
             font-weight: bold;
             font-size: 1.25rem;
-            color: #fff !important;
+            transition: color 0.3s;
             padding-left: 1rem;
             line-height: 56px;
-            transition: color 0.3s;
         }
 
             .navbar-brand:hover {
-                color: #e9ecef !important;
+                color: #fff !important;
             }
 
         footer {
@@ -146,7 +143,8 @@
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <form asp-controller="Account" asp-action="Logout" method="post" style="display: inline;">
-                            <button type="submit" class="dropdown-item" onclick="return confirm('Bạn có chắc muốn đăng xuất?')">
+                            <button type="submit" class="dropdown-item">
+                                <!-- FIX: Bỏ onclick confirm, đăng xuất trực tiếp -->
                                 <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
                             </button>
                         </form>
